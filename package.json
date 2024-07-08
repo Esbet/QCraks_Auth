@@ -2,10 +2,10 @@
   "name": "auth-google-passport",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "app/index.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/index.js"
+    "start": "node ./app/index.js"
   },
   "keywords": [],
   "author": "",
