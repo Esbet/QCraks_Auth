@@ -19,7 +19,7 @@ loginRouter.get("/google", (req, res) =>{
       // Set the cookie with the user data
       res.cookie('userData', userDataString, { maxAge: 900000, httpOnly: false });
       // Send a response to the client (optional)
-      res.send(user);
+      res.redirect('/home');
     } else {
      // Handling if the user is not authenticated
       res.status(401).json({ error: "User not authenticated" });
