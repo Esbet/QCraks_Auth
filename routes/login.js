@@ -5,6 +5,8 @@ const loginRouter = Router();
 loginRouter.get("/google", (req, res) =>{
     const user = req.user;
 
+    console.log("***user***",user);
+
     if (user) {
       // define cookies
       const userData = {
@@ -12,6 +14,7 @@ loginRouter.get("/google", (req, res) =>{
         displayName: user.displayName,
         email: user.emails[0].value,
         token: user.accessToken,
+        photo: user.photos[0].value
       };
 
       // Serialize user data to store in cookie
