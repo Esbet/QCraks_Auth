@@ -35,7 +35,7 @@ app.use(
       "https://www.googleapis.com/auth/userinfo.email",
     ],
     session: true,
-    failureRedirect: "/failed"
+    failureRedirect: "/unauthorized"
   }),
   loginRouter
 );
