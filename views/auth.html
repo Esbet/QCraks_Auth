@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Estudio sobre Firebase Auth con JavaScript v.0.1b</title>
+  <style>
+    body {
+      font-family: system-ui;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      background-color: #eef;
+    }
+
+    .card {
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
+      padding: 2rem;
+      max-height: 70vh;
+      max-width: 50vh;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    button {
+      outline: none;
+      cursor: pointer;
+      border-radius: 2rem;
+      border: none;
+      padding: .5rem 1.5rem;
+      font-size: large;
+    }
+
+    button.bIniciar {
+      background-color: #5588dd;
+      color: #fff;
+    }
+
+    .oculto {
+      display: none;
+    }
+
+    .seccion {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .seccion.pie {
+      max-height: 5rem;
+    }
+
+    .info {
+      min-height: 5rem;
+      text-align: center;
+    }
+
+    .info p {
+      margin: .5rem;
+    }
+
+    .avatar {
+      background-size: cover;
+      background-color: #ddd;
+      height: 7rem;
+      width: 7rem;
+      border: 7px solid #eee;
+      border-radius: 100%;
+      margin: 1rem;
+    }
+  </style>
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app-compat.js"></script>
+  <!-- Firebase Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth-compat.js"></script>
+
+  <script>
+    // Tu configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDNMJmiCPzlUiB3K0Cpli-4_3X4jYI_T98",
+      authDomain: "qcrack-auth.firebaseapp.com",
+      projectId: "qcrack-auth",
+      storageBucket: "qcrack-auth.appspot.com",
+      messagingSenderId: "514235033431",
+      appId: "1:514235033431:web:9fa51a8771102128d28012",
+      measurementId: "G-J83K8MY9DC"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    // Espera a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+
+      // Agrega event listener para el botón de Cerrar sesión
+      document.querySelector('.bCerrar').addEventListener('click', function(e) {
+        loading(true);
+        firebase.auth().signOut()
+          .then(() => {
+            loading(false);
+          })
+          .catch(error => {
+            console.error('Error during sign out:', error);
+            loading(false);
+          });
+      });
+
+      // Agrega event listener para el botón de Iniciar sesión
+      document.querySelector('.bIniciar').addEventListener('click', function(e) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        loading(true);
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
+          .then(function() {
+            return firebase.auth()
+              .signInWithPopup(provider)
+              .then(() => {
+                loading(false);
+              })
+              .catch(err => {
+                console.log('Error during sign in:', err);
+                document.querySelector('.bIniciar.oculto') && document.querySelector('.bIniciar.oculto').classList.remove('oculto');
+              });
+          })
+          .catch(function(error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.error('Error during persistence setup:', errorCode, errorMessage);
+          });
+      });
+
+      // Observa el estado de autenticación
+      firebase.auth().onAuthStateChanged(userInfo => {
+        if (userInfo) {
+          document.querySelector('.bIniciar').classList.add('oculto');
+          document.querySelector('.bCerrar.oculto') && document.querySelector('.bCerrar.oculto').classList.remove('oculto');
+          document.querySelector('.avatar').style.backgroundImage = `url( ${userInfo.photoURL} )`;
+          document.querySelector('.info').innerHTML = `
+            <p>${userInfo.displayName}</p>
+            <p>${userInfo.email}</p>
+          `;
+        } else {
+          document.querySelector('.avatar').style.backgroundImage = null;
+          document.querySelector('.info').innerHTML = '';
+          document.querySelector('.bCerrar').classList.add('oculto');
+          document.querySelector('.bIniciar.oculto') && document.querySelector('.bIniciar.oculto').classList.remove('oculto');
+        }
+      });
+
+      // Función para manejar el estado de carga
+      function loading(sw) {
+        const $bI = document.querySelector('.bIniciar');
+        $bI.style.pointerEvents = sw ? 'none' : null;
+        $bI.textContent = sw ? 'Conectando ...' : 'Iniciar sesión';
+      }
+
+    });
+  </script>
+</head>
+
+<body>
+  <div class="card">
+    <div class="seccion">
+      <div class="avatar"></div>
+      <div class="info"></div>
+    </div>
+    <div class="seccion pie">
+      <button class="bIniciar oculto">Iniciar sesión</button>
+      <button class="bCerrar oculto">Cerrar sesión</button>
+    </div>
+  </div>
+</body>
+
+</html>

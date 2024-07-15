@@ -60,6 +60,13 @@ app.get('/home', ensureAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, '../views/home.html'));
 });
 
+app.get('/loginuser', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/auth.html'));
+});
+
+
+
+
 app.listen(3000, () => console.log("http://localhost:3000/auth"));
 
 
